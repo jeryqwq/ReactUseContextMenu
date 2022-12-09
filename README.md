@@ -1,12 +1,12 @@
 # react-context-menu
 
-[![NPM version](https://img.shields.io/npm/v/react-use-contextmenu.svg?style=flat)](https://npmjs.org/package/react-use-contextmenu)
-[![NPM downloads](http://img.shields.io/npm/dm/react-use-contextmenu.svg?style=flat)](https://npmjs.org/package/react-use-contextmenu)
+[![NPM version](https://img.shields.io/npm/v/@jeryqwq/react-use-contextmenu.svg?style=flat)](https://npmjs.org/package/@jeryqwq/react-use-contextmenu)
+[![NPM downloads](http://img.shields.io/npm/dm/@jeryqwq/react-use-contextmenu.svg?style=flat)](https://npmjs.org/package/@jeryqwq/react-use-contextmenu)
 
 ## Install
 
 ```bash
-$ pnpm install react-use-contextmenu
+$ pnpm install @jeryqwq/react-use-contextmenu
 ```
 
 ## run | build
@@ -51,7 +51,7 @@ $ npm run build
 ### DEMO
 
 ```jsx
-import useContextMenu from 'react-use-contextmenu';
+import useContextMenu from '@jeryqwq/react-use-contextmenu';
 import React from 'react'
 
 
@@ -93,7 +93,7 @@ export default function MyContextMenu () {
 可通过初始化hooks时配置触发方式来适配其它激活操作。
 
 ```tsx
-import useContextMenu from 'react-use-contextmenu';
+import useContextMenu from '@jeryqwq/react-use-contextmenu';
 import React from 'react'
 
 
@@ -117,7 +117,7 @@ export default function MyContextMenu () {
 ## 多级菜单 & 异步动态加载
 
 ```tsx
-import useContextMenu from 'react-use-contextmenu';
+import useContextMenu from '@jeryqwq/react-use-contextmenu';
 import React from 'react'
 import { ReloadOutlined } from '@ant-design/icons';
 
@@ -169,7 +169,7 @@ export default function MyContextMenu () {
 
 ```tsx
 import React, {  useState } from 'react';
-import useContextMenu from 'react-use-contextmenu';
+import useContextMenu from '@jeryqwq/react-use-contextmenu';
 import { Button, Table  } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons';
 
