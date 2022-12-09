@@ -1,0 +1,38 @@
+{
+  "name": "react-use-contextmenu",
+  "version": "0.0.1",
+  "description": "react-context-menu contextmenu menu react useContextMenu",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "scripts": {
+    "dev": "father dev",
+    "build": "father build",
+    "build:deps": "father prebundle",
+    "prepublishOnly": "father doctor && npm run build"
+  },
+  "keywords": [],
+  "authors": [
+    "jery1997@foxmail.com"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "compiled"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@babel/runtime": "^7.20.6",
+    "@ant-design/icons": "^4.8.0"
+  },
+  "devDependencies": {
+    "father": "^4.1.1",
+    "@types/react": ">=18.0.25",
+    "@types/react-dom": ">=18.0.9",
+    "cross-env": "^7.0.3"
+  }
+}
