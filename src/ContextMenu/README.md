@@ -103,45 +103,50 @@ export default function MyContextMenu () {
 }
 ```
 
-## 多级菜单 & 异步动态加载
+## 多级菜单 & 异步无限加载
+
+用来测试极端情况，始终报纸多层情况下能渲染在可视化屏幕内。
 
 ```tsx
 import { ContextMenu } from '@vis/components';
-import React from 'react'
+import React from 'react';
 import { ReloadOutlined } from '@ant-design/icons';
 const { useContextMenu } = ContextMenu;
-
-export default function MyContextMenu () {
-  const { Trigger, ContextMenu } = useContextMenu()
-
-
-  return <div>
-    <Trigger data={{id: '123'}}>右键我</Trigger>
-    <ContextMenu menus={[{ label: '操作1', value: '1' },
-    {
-  label: '动态异步菜单',
-  value: 'key2',
-  icon: <ReloadOutlined />,
-  children: () => {
+import { Spin } from 'antd';
+const loadChildren = (item) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve([
-          { label: '操作2-1',
-            value: 'key2-1'
+          { label: `操作${item.value}-1`,
+            value: `key${item.value}-1`
           },
-          { label: '操作2-2',
-            value: 'key2-2'
+          { label: `操作${item.value}-2`,
+            value: `key${item.value}-2`,
+            children: loadChildren
           },
-          { label: '操作2-3',
-            value: 'key2-3'
+          { label: `操作${item.value}-3`,
+            value: `key${item.value}-3`
           },
-          { label: '操作2-4',
-            value: 'key2-4'
+          { label: `操作${item.value}-4`,
+            value: `key${item.value}-4`
           }
         ])
       }, 1000)
     })
   }
+export default function MyContextMenu () {
+  const { Trigger, ContextMenu } = useContextMenu()
+
+  return <div>
+    <Trigger data={{id: '123'}} style={{border: 'solid 1px red'}}><div>右键我</div></Trigger>
+    <ContextMenu 
+    loadding={<Spin size={'small'}/>}
+  menus={[{ label: '操作1', value: '1' },
+    {
+  label: '动态异步菜单',
+  value: 'key2',
+  icon: <ReloadOutlined />,
+  children: loadChildren
 },
     ]} onClick={(e, data, menu) => {
       alert(`data.id: ${data.id} menu.value: ${menu.value}`)

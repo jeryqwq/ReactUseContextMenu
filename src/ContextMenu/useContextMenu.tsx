@@ -47,6 +47,7 @@ export default (hooksProps : HooksProps) => {
       const el = createRef<HTMLDivElement>()
       useLayoutEffect(() => {
         const contextMenuHandle = function (e: MouseEvent) {
+          e.stopPropagation()
           e.preventDefault()
           curItem.current = data
           setPosition({
@@ -74,20 +75,15 @@ export default (hooksProps : HooksProps) => {
     }: ContextMenuProps) => {
       useLayoutEffect(() => {
         const hideMenu = function () {
-          setTimeout(() => {
-           setMenuVisible(false);
-          }, 0);
+            setMenuVisible(false);
          }
-        event !== 'click' && document.body.addEventListener('click', hideMenu)
+         document.body.addEventListener('click', hideMenu)
         return () => {
-          event !== 'click' && document.body.removeEventListener('click', hideMenu)
+          document.body.removeEventListener('click', hideMenu)
         }
       }, [])
       return <div
         tabIndex={0}
-        onClick={() => {
-          setMenuVisible(false)
-        }}
         style={{
           left: position.x ?? 0,
           top: position.y ?? 0,
@@ -100,6 +96,7 @@ export default (hooksProps : HooksProps) => {
             onClick={onClick}
             curItem={curItem}
             loadding={loadding}
+            setMenuVisible={setMenuVisible}
           />
         </div>
     }

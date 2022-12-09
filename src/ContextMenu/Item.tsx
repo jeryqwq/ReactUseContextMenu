@@ -9,11 +9,12 @@ export type ContextMenuItemProps = {
   curData: React.MutableRefObject<ContextMenuItem | undefined>;
   depth: number;
   prevRects: Array<() => HTMLUListElement>;
-  loadding: React.ReactNode
+  loadding: React.ReactNode;
+  setMenuVisible: (visible: boolean) => void
 }
 
 const Item = memo(function (props: ContextMenuItemProps) { // 渲染单项
-  const { item, curData, onClick , prevRects, depth, loadding} = props;
+  const { item, curData, onClick , prevRects, depth, loadding, setMenuVisible} = props;
   const [isLoadding, setLoadding] = useState(false)
   const [showChildren, setShowChildren] = useState(false)
   const [, startTransition] = useTransition()
@@ -27,6 +28,7 @@ const Item = memo(function (props: ContextMenuItemProps) { // 渲染单项
         return
       }
       !item.disabled && onClick(e, curData?.current as any, item)
+      setMenuVisible(false)
     }}
     tabIndex={-1}
     onMouseEnter={async (e) => {

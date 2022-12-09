@@ -7,7 +7,7 @@ export const compareShapeLocation = function (b: DOMRect) {
   }
   0 > b.left && (ret.left = true)
   0 > b.top && (ret.top = true)
-  window.innerWidth < b.right && (ret.right = true)
+  window.innerWidth < b.right && (ret.right = b.right - window.innerWidth)
   window.innerHeight < (b.bottom ) && (ret.bottom = (b.bottom) - window.innerHeight)
   return ret
 }

@@ -16,7 +16,7 @@ declare type SubMenuProps = {
 
 export default function (props : SubMenuProps) {
   const { children, prevRects, depth } = props
-  const [_layout, setLayout] = useState<React.CSSProperties>({ position: 'absolute', left: '100%', top: '0' })
+  const [_layout, setLayout] = useState<React.CSSProperties>({ position: 'absolute', left: '100%', top: '0', zIndex: depth })
   const rectRef = createRef<HTMLUListElement>()
   prevRects[depth] = () => rectRef.current as HTMLUListElement
   useLayoutEffect(() => {
@@ -26,17 +26,21 @@ export default function (props : SubMenuProps) {
     let layout: React.CSSProperties = { transform : ''}
     if(res?.right) { // 右侧无法展示， 移到最左侧展示 
       let moveX = 0
-      prevRects.forEach((i, idx) => {
-        if(idx !== prevRects.length -1 ) {
-          moveX += (i?.()?.getBoundingClientRect().width) || 0
-        }
-      })
-      layout.transform += `translateX(calc( -100% - ${moveX}px ))`
+      if(depth <= 1) { // 如果当前第二层以前，更好的效果我们渲染到最左边去
+        prevRects.forEach((i, idx) => {
+          if(idx !== prevRects.length -1 ) {
+            moveX += (i?.()?.getBoundingClientRect().width) || 0
+          }
+        })
+        layout.transform += `translateX(calc( -100% - ${moveX}px ))`
+      }else{ // 否则直接基于上一次的出来的做累加
+        layout.left = 10
+      }
     }
     if(res?.bottom) {
-      layout.transform += `translateY(-${res.bottom}px )`
+      layout.transform += `translateY(-${res.bottom as number + depth * 10}px )`
     }
-    setLayout({..._layout, ...layout})
+    (res?.right || res?.bottom ) && setLayout({..._layout, ...layout})
   }, [])
   return (
     <ul

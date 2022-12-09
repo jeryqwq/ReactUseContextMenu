@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useMemo } from 'react';
 import './index.less';
 import Item from './Item';
 import SubMenu from './SubMenu';
@@ -22,7 +22,7 @@ export declare type ContextMenuItem = {
 
 export type HandleClick = (e: MouseEvent<HTMLLIElement, any>, item: ContextMenuItem & { target: HTMLElement }, menu: ContextMenuItem) => void
 
-type ContextMenuProps = {
+export type ContextMenuProps = {
   /** 菜单数据 */
   menus: Array<ContextMenuItem>;
   onClick: HandleClick;
@@ -37,6 +37,8 @@ type ContextMenuProps = {
   prevRects?: Array<() => HTMLUListElement>;
     /** 自定义加载图表 */
   loadding?: React.ReactNode;
+  /** 设置菜单显示隐藏 */
+  setMenuVisible: (visible: boolean) => void
 };
 
 export const prefixCls = 'vis-comp-context-menu-'
@@ -48,13 +50,14 @@ const ContextMenu = function (props: ContextMenuProps) {
     curItem,
     prevRects = [],
     depth = 0,
-    loadding
+    loadding,
+    setMenuVisible
   } = props
-  return <SubMenu {...props} depth={ depth } prevRects={prevRects}>
-    {
-      menus.map(i => <Item loadding={loadding} item={i} curData={ curItem } onClick={onClick} prevRects={prevRects} depth={depth + 1}/>)
-    }
-  </SubMenu>
+  return useMemo(() => <SubMenu {...props} depth={ depth } prevRects={prevRects}>
+  {
+    menus.map(i => <Item loadding={loadding} item={i} curData={ curItem } onClick={onClick} prevRects={prevRects} depth={depth + 1} setMenuVisible={setMenuVisible}/>)
+  }
+</SubMenu>, [onClick, menus, loadding])
 }
 
 ContextMenu.Item = Item
