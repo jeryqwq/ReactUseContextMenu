@@ -46,7 +46,8 @@ $ npm run build
 
 ### MenuItem 数据结构
 
-<API src="./index.tsx" hideTitle  exports='["ContextMenuItem"]'></API>
+<table style="margin-top: 24px;"><thead><tr><th>属性名</th><th>描述</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>value</td><td>唯一值</td><td><code>string</code></td><td><code>(必选)</code></td></tr><tr><td>label</td><td>展示的名称或者自定义jsx</td><td><code>ReactNode</code></td><td><code>(必选)</code></td></tr><tr><td>children</td><td>子节点加载方法或者子节点数组</td><td><code>ContextMenuItem[] | ((item: ContextMenuItem) =&gt; ContextMenuItem[])</code></td><td><code>--</code></td></tr><tr><td>icon</td><td>图表</td><td><code>ReactNode</code></td><td><code>--</code></td></tr><tr><td>disabled</td><td>是否禁用，禁用后不会处罚单击函数</td><td><code>boolean</code></td><td><code>--</code></td></tr><tr><td>render</td><td>自定义渲染</td><td><code>(_: ContextMenuItem) =&gt; ReactNode</code></td><td><code>--</code></td></tr><tr><td>loadding</td><td>自定义加载图表</td><td><code>ReactNode</code></td><td><code>--</code></td></tr></tbody></table>
+
 
 ### DEMO
 
@@ -71,7 +72,7 @@ export default function MyContextMenu () {
 
 逻辑解耦， 只负责处理处理右键和定位逻辑， 返回的Trigger和ContextMenu是包含菜单功能逻辑的菜单和触发器，用的时候只要加一些配置即可，可配置唤醒方式，单击，右键等事件，默认右键唤醒
 
-<API src="./useContextMenu.tsx" hideTitle exports='["HooksProps"]'></API>
+<table style="margin-top: 24px;"><thead><tr><th>属性名</th><th>描述</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>event</td><td>w3c规范的所有的事件字符串内容</td><td><code>keyof HTMLElementEventMap</code></td><td><code>contextmenu</code></td></tr></tbody></table>
 
 
 ### Trigger 触发器
@@ -80,13 +81,13 @@ export default function MyContextMenu () {
 
 `注：为了无缝接入其它组件库，所有在Trigger上的参数都会被渲染到子元素的props上`[接入Antd Table](/components/context-menu#table列表右键菜单)
 
-<API src="./useContextMenu.tsx" hideTitle exports='["TriggerProps"]'></API>
+<table style="margin-top: 24px;"><thead><tr><th>属性名</th><th>描述</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>children</td><td>该属性的子节点</td><td><code>ReactNode</code></td><td><code>(必选)</code></td></tr><tr><td>data</td><td>需要传递给菜单的数据</td><td><code>any</code></td><td><code>(必选)</code></td></tr><tr><td>getEl</td><td>如果是其它元素，可用此方法绑定任意触发DOM</td><td><code>() =&gt; HTMLDivElement</code></td><td><code>--</code></td></tr><tr><td>style</td><td>外层的css样式</td><td><code>CSSProperties</code></td><td><code>--</code></td></tr><tr><td>tag</td><td>渲染Trigger的标签，用来适配一些其它框架</td><td><code>string</code></td><td><code>div</code></td></tr></tbody></table>
 
 ### ContextMenu 
 
 展示菜单UI的组件和对应的菜单处理函数。
 
-<API src="./useContextMenu.tsx" hideTitle exports='["ContextMenuProps"]'></API>
+<table style="margin-top: 24px;"><thead><tr><th>属性名</th><th>描述</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>menus</td><td>菜单数据</td><td><code>ContextMenuItem[]</code></td><td><code>(必选)</code></td></tr><tr><td>onClick</td><td>单击处理函数 ，分别是 event, data(触发器数据), node(菜单)</td><td><code>HandleClick</code></td><td><code>(必选)</code></td></tr><tr><td>loadding</td><td>自定义加载图表</td><td><code>ReactNode</code></td><td><code>--</code></td></tr></tbody></table>
 
 ## 触发方式
 
@@ -161,7 +162,29 @@ export default function MyContextMenu () {
 }
 ```
 
-## Table列表右键菜单
+## 已存在DOM节点触发
+
+给任意已渲染的dom添加触发器
+
+```jsx
+import useContextMenu from '@jeryqwq/react-use-contextmenu';
+import React, { useState, useLayoutEffect } from 'react'
+
+export default function MyContextMenu () {
+  const { Trigger, ContextMenu } = useContextMenu()
+
+  return <div>
+    <Trigger data={{id: '1j24iej1h2r23'}} getEl={() => { return document.getElementsByClassName('any class name')[0] }}></Trigger>
+    <ContextMenu menus={[{ label: '操作1', value: '1' }]} onClick={(e, data, menu) => {
+      alert(`data.id: ${data.id} menu.value: ${menu.value}`)
+    }}/>
+  </div>
+}
+
+```
+
+
+## Antd Table列表右键菜单
 
 无缝接入ant design [Table](https://4x.ant.design/components/table-cn/#components-table-demo-edit-row)组件， 为每项加入菜单, 重写render row方法，把所有属性同步到`Trigger`即可
 
@@ -256,13 +279,4 @@ export default () => {
 }
 ```
 
-
-## 自定义封装
-
-<Alert type="error">
-  <span style="color: red">
-  注：以下API适用于个人封装，与hooks用法无关，可不了解
-  </span>
-</Alert>
-<API src="./index.tsx"></API>
 
