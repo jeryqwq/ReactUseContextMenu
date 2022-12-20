@@ -2,7 +2,6 @@ import { MouseEvent, useMemo } from 'react';
 import './index.less';
 import Item from './Item';
 import SubMenu from './SubMenu';
-import useContextMenu from './useContextMenu';
 export declare type ContextMenuItem = {
   /** 唯一值 */
   value: string;
@@ -18,13 +17,17 @@ export declare type ContextMenuItem = {
   render?: (_: ContextMenuItem) => React.ReactNode;
   /** 自定义加载图表 */
   loadding?: React.ReactNode;
+  /** 自定义单独处理函数 */
+  onClick?: (e: MouseEvent, item: ContextMenuItem, data: any) => void
+  [key: string]: any
 };
 
-export type HandleClick = (e: MouseEvent<HTMLLIElement, any>, item: ContextMenuItem & { target: HTMLElement }, menu: ContextMenuItem) => void
+export type HandleClick = (e: MouseEvent<HTMLLIElement, any>, item: any, menu: ContextMenuItem) => void
 
 export type ContextMenuProps = {
   /** 菜单数据 */
   menus: Array<ContextMenuItem>;
+  /** 点击处理函数，传递e, 当前数据项， menu 菜单项 */
   onClick: HandleClick;
   /** 当前Trigger触发的数据项 */
   curItem: React.MutableRefObject<ContextMenuItem | undefined>;
@@ -57,12 +60,11 @@ const ContextMenu = function (props: ContextMenuProps) {
   {
     menus.map(i => <Item loadding={loadding} item={i} curData={ curItem } onClick={onClick} prevRects={prevRects} depth={depth + 1} setMenuVisible={setMenuVisible}/>)
   }
-</SubMenu>, [onClick, menus, loadding])
+</SubMenu>, [onClick, menus, loadding]) // 排除其它惰性访问的属性
 }
 
 ContextMenu.Item = Item
 
-ContextMenu.useContextMenu = useContextMenu
 
 export default ContextMenu
 

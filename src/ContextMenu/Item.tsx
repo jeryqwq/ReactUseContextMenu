@@ -21,6 +21,7 @@ const Item = memo(function (props: ContextMenuItemProps) { // 渲染单项
   return <li
     className={ item.disabled ? prefixCls + 'disabled' : '' }
     onClick={(e) => {
+      item.onClick && item.onClick(e, item, curData.current)
       if(depth >= 1) {
         e.stopPropagation()
       }

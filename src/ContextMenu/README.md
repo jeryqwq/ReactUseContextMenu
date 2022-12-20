@@ -26,7 +26,7 @@ nav:
 
 # ContextMenu 组件描述
 
-用于需要对该项进行多个选项操作时。
+用于需要对该项进行多个功能选项操作时, 包含有禁用，多级，动态加载，列表右键菜单等，可以使用右键菜单进行对应的操作和展示。
 
 ## 基础
 
@@ -40,9 +40,8 @@ nav:
 ### DEMO
 
 ```jsx
-import { ContextMenu } from '@vis/components';
+import { useContextMenu } from '@vis/components';
 import React from 'react'
-const { useContextMenu } = ContextMenu;
 
 export default function MyContextMenu () {
   const { Trigger, ContextMenu } = useContextMenu()
@@ -82,9 +81,8 @@ export default function MyContextMenu () {
 可通过初始化hooks时配置触发方式来适配其它激活操作。
 
 ```tsx
-import { ContextMenu } from '@vis/components';
+import { useContextMenu } from '@vis/components';
 import React from 'react'
-const { useContextMenu } = ContextMenu;
 
 export default function MyContextMenu () {
   const { Trigger, ContextMenu } = useContextMenu({ event: 'click' })
@@ -108,10 +106,9 @@ export default function MyContextMenu () {
 用来测试极端情况，始终报纸多层情况下能渲染在可视化屏幕内。
 
 ```tsx
-import { ContextMenu } from '@vis/components';
+import { useContextMenu } from '@vis/components';
 import React from 'react';
 import { ReloadOutlined } from '@ant-design/icons';
-const { useContextMenu } = ContextMenu;
 import { Spin } from 'antd';
 const loadChildren = (item) => {
     return new Promise((resolve, reject) => {
@@ -143,16 +140,42 @@ export default function MyContextMenu () {
     loadding={<Spin size={'small'}/>}
   menus={[{ label: '操作1', value: '1' },
     {
-  label: '动态异步菜单',
-  value: 'key2',
-  icon: <ReloadOutlined />,
-  children: loadChildren
-},
+      label: '动态异步菜单',
+      value: 'key2',
+      icon: <ReloadOutlined />,
+      children: loadChildren,
+    },
     ]} onClick={(e, data, menu) => {
       alert(`data.id: ${data.id} menu.value: ${menu.value}`)
     }}/>
   </div>
 }
+```
+
+## 已存在DOM节点触发
+
+给任意已渲染的dom添加触发器
+
+```jsx
+import { useContextMenu } from '@vis/components';
+import React, { useState, useLayoutEffect } from 'react'
+
+export default function MyContextMenu () {
+  const { Trigger, ContextMenu } = useContextMenu()
+  const [, set] = useState()
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      set({})
+    }, 200)
+  }, [])
+  return <div>
+    <Trigger data={{id: '1j24iej1h2r23'}} getEl={() => { return document.getElementsByClassName('__dumi-default-navbar-logo')[0] }}>点击图标logo</Trigger>
+    <ContextMenu menus={[{ label: '操作1', value: '1' }]} onClick={(e, data, menu) => {
+      alert(`data.id: ${data.id} menu.value: ${menu.value}`)
+    }}/>
+  </div>
+}
+
 ```
 
 ## Table列表右键菜单
@@ -163,11 +186,10 @@ export default function MyContextMenu () {
 
 ```tsx
 import React, {  useState } from 'react';
-import { ContextMenu } from '@vis/components';
+import { ContextMenu, useContextMenu } from '@vis/components';
 import { Button, Table  } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons';
 
-const { Trigger, useContextMenu } = ContextMenu;
 
 const menus = [{
   label: '操作1',

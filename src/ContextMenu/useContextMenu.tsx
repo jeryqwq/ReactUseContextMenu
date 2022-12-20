@@ -9,7 +9,7 @@ export type TriggerProps = {
   children: React.ReactNode;
   /** 需要传递给菜单的数据 */
   data: any;
-  /** 如果是其它元素，可用此方法绑定任意触发器 */
+  /** 如果是其它元素，可用此方法绑定任意触发DOM */
   getEl?: () => HTMLDivElement;
   /** 外层的css样式 */
   style?: React.CSSProperties;
@@ -18,6 +18,12 @@ export type TriggerProps = {
    * @default div
    *  */
   tag?: string;
+  /**
+  * @description 可在这里动态触发修改菜单配置实现动态菜单
+  */
+  handle?: (e: MouseEvent, data: any) => void
+  [key: string]: any;
+
 }
 
 declare type ContextMenuProps = {
@@ -31,19 +37,21 @@ declare type ContextMenuProps = {
 
 declare type HooksProps = {
     /** 
-   * @description w3c规范的所有的事件字符串内容
+   * @description w3c规范的所有的鼠标事件字符串内容
    * @default contextmenu
    */
     event?: keyof HTMLElementEventMap;
+ 
 }
-export default (hooksProps : HooksProps) => {
+export default (hooksProps?: HooksProps) => {
   const { event = 'contextmenu' } = hooksProps || {}
   const curItem = useRef<ContextMenuItem>()
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
   const [menuVisible, setMenuVisible] = useState(false)
 
   return {
-    Trigger: ({ children, data, getEl, style, tag = 'div', ...ohters }: TriggerProps) => {
+    setMenuVisible,
+    Trigger: ({ children, data, getEl, style, tag = 'div', handle, ...ohters }: TriggerProps) => {
       const el = createRef<HTMLDivElement>()
       useLayoutEffect(() => {
         const contextMenuHandle = function (e: MouseEvent) {
@@ -54,6 +62,7 @@ export default (hooksProps : HooksProps) => {
             x: e.clientX,
             y: e.clientY
           })
+          handle && handle(e, data)
           setMenuVisible(true)
         }
         const trigger = getEl?.() || el.current;
@@ -103,7 +112,7 @@ export default (hooksProps : HooksProps) => {
   }
 }
 
-export const ContextMenuProps = (_: ContextMenuProps) => <></>
+export const ContextMenuProps = (_?: ContextMenuProps) => <></>
 
 export const TriggerProps = (_: TriggerProps) => <></>
 
