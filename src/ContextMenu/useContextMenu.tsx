@@ -1,5 +1,6 @@
 import React from "react";
 import { createRef, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from 'react-dom';
 import ContextMenu, { ContextMenuItem, HandleClick } from './index'
 
 
@@ -41,10 +42,13 @@ declare type HooksProps = {
    * @default contextmenu
    */
     event?: keyof HTMLElementEventMap;
- 
+    /**
+     * @description 菜单渲染父节点。默认渲染到 body 上，如果你遇到菜单滚动定位问题，试试修改为滚动的区域，并相对其定位。
+     */
+    getMenuContainer?: () => HTMLDivElement
 }
 export default (hooksProps?: HooksProps) => {
-  const { event = 'contextmenu' } = hooksProps || {}
+  const { event = 'contextmenu', getMenuContainer } = hooksProps || {}
   const curItem = useRef<ContextMenuItem>()
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
   const [menuVisible, setMenuVisible] = useState(false)
@@ -58,9 +62,11 @@ export default (hooksProps?: HooksProps) => {
           e.stopPropagation()
           e.preventDefault()
           curItem.current = data
+          const elContainer = getMenuContainer?.()
+          const { left, top } = elContainer?.getBoundingClientRect() || { left: 0, top: 0 }
           setPosition({
-            x: e.clientX,
-            y: e.clientY
+            x: elContainer ? e.clientX - left : e.clientX,
+            y: elContainer ? e.clientY - top : e.clientY
           })
           handle && handle(e, data)
           setMenuVisible(true)
@@ -84,36 +90,32 @@ export default (hooksProps?: HooksProps) => {
     }: ContextMenuProps) => {
       useLayoutEffect(() => {
         const hideMenu = function () {
-            setMenuVisible(false);
+            setMenuVisible(false)
          }
          document.body.addEventListener('click', hideMenu)
         return () => {
           document.body.removeEventListener('click', hideMenu)
         }
       }, [])
-      return <div
-        tabIndex={0}
-        style={{
-          left: position.x ?? 0,
-          top: position.y ?? 0,
-          display: menuVisible ? 'block' : 'none',
-          position: 'fixed',
-          zIndex: '999'
-        }}>
-          <ContextMenu
-            menus={menus}
-            onClick={onClick}
-            curItem={curItem}
-            loadding={loadding}
-            setMenuVisible={setMenuVisible}
-          />
-        </div>
+      const _el = <div
+      tabIndex={0}
+      style={{
+        left: position.x ?? 0,
+        top: position.y ?? 0,
+        display: menuVisible ? 'block' : 'none',
+        position: getMenuContainer ? 'absolute' : 'fixed',
+        zIndex: '999'
+      }}>
+        <ContextMenu
+          menus={menus}
+          onClick={onClick}
+          curItem={curItem}
+          loadding={loadding}
+          setMenuVisible={setMenuVisible}
+        />
+      </div>
+      return  getMenuContainer?.() ?  createPortal(_el, getMenuContainer()) : _el 
     }
   }
 }
 
-export const ContextMenuProps = (_?: ContextMenuProps) => <></>
-
-export const TriggerProps = (_: TriggerProps) => <></>
-
-export const HooksProps = (_: HooksProps) => <></>

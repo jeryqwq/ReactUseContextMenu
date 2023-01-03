@@ -279,4 +279,30 @@ export default () => {
 }
 ```
 
+## 指定父元素渲染 | getMenuContainer
 
+菜单渲染父节点。默认fixed渲染到 元素中，如果你遇到菜单滚动定位问题，试试修改为滚动的区域，并相对其定位。
+
+```tsx
+import { useContextMenu } from '@vis/components';
+import React from 'react'
+
+export default function MyContextMenu () {
+  const { Trigger, ContextMenu } = useContextMenu({
+    getMenuContainer() {
+      return document.getElementById('my-el')
+    }
+  })
+
+  return <div style={{height: 200, overflow: 'scroll'}}>
+    <div  id="my-el" style={{width: 500, height: 800, background: 'red', position: 'relative'}}>
+      <Trigger data={{id: 'click'}}>单击触发</Trigger>
+      <ContextMenu menus={[{ label: '操作1', value: '1' }]} onClick={(e, data, menu) => {
+        alert(`data.id: ${data.id} menu.value: ${menu.value}`)
+      }}/>
+    </div>
+    
+  </div>
+}
+
+```
